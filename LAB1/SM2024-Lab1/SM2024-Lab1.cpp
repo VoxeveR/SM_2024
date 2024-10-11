@@ -153,11 +153,15 @@ void Funkcja9() {
 SDL_Color YIQtoRGB(float y, float i, float q){
 
     SDL_Color RGBret;
+    float r, g, b;
 
-    RGBret.r = y + (i * 0.956) + (q * 0.619);
-    RGBret.g = y + (i * (-0.272)) + (q * (-0.647));
-    RGBret.b = y + (i * (-1.106)) + (q * 1.703);
+    r = y + (i * 0.956) + (q * 0.619);
+    g = y + (i * (-0.272)) + (q * (-0.647));
+    b = y + (i * (-1.106)) + (q * 1.703);
 
+    RGBret.r = (r<0 ? 0 : (r>255 ? 255 : r));
+    RGBret.g = (g<0 ? 0 : (g>255 ? 255 : g));
+    RGBret.b = (b<0 ? 0 : (b>255 ? 255 : b));
 
     return RGBret;
 }
@@ -183,10 +187,15 @@ YIQ getYIQ(int xx, int yy){
 SDL_Color YCbCrtoRGB(float y, float cb, float cr){
 
     SDL_Color RGBret;
+    float r, g, b;
 
-    RGBret.r = y + 1.402 * (cr - 128);
-    RGBret.g = y - 0.344136 * (cb - 128) - 0.714136 * (cr - 128);
-    RGBret.b = y + 1.772 * (cb - 128);
+    r = y + 1.402 * (cr - 128);
+    g = y - 0.344136 * (cb - 128) - 0.714136 * (cr - 128);
+    b = y + 1.772 * (cb - 128);
+
+    RGBret.r = (r<0 ? 0 : (r>255 ? 255 : r));
+    RGBret.g = (g<0 ? 0 : (g>255 ? 255 : g));
+    RGBret.b = (b<0 ? 0 : (b>255 ? 255 : b));
 
     return RGBret;
 }
@@ -212,10 +221,15 @@ YCbCr getYCbCr(int xx, int yy){
 SDL_Color YUVtoRGB(float y, float u, float v){
 
     SDL_Color RGBret;
+    float r, g, b;
 
-    RGBret.r = y * 1 + u * 0 + v * 1.13983;
-    RGBret.g = y * 1 + u * (-0.39465) + v * (-0.58060);
-    RGBret.b = y * 1 + u * 2.03211 + 0 * v;
+    r = y * 1 + u * 0 + v * 1.13983;
+    g = y * 1 + u * (-0.39465) + v * (-0.58060);
+    b = y * 1 + u * 2.03211 + 0 * v;
+
+    RGBret.r = (r<0 ? 0 : (r>255 ? 255 : r));
+    RGBret.g = (g<0 ? 0 : (g>255 ? 255 : g));
+    RGBret.b = (b<0 ? 0 : (b>255 ? 255 : b));
 
     return RGBret;
 }
