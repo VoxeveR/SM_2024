@@ -49,7 +49,7 @@ void Funkcja1() {
         for(int y = 0; y < wysokosc/2; y++){
             HSL color = getHSL(x, y);
 
-            setHSL(x+szerokosc/2,y+wysokosc/2, color.H, color.S, color.L);
+            setHSL(x+szerokosc/2, y, color.H, color.S, color.L);
         }
     }
 
@@ -58,13 +58,7 @@ void Funkcja1() {
 
 void Funkcja2() {
 
-    for(int x = 0; x < szerokosc/2; x++){
-        for(int y = 0; y < wysokosc/2; y++){
-            //HSL color = getHSL(x, y);
-
-            setHSL(x+szerokosc/2,y, 197, 67, 28);
-        }
-    }
+    //...
 
     SDL_UpdateWindowSurface(window);
 }
@@ -134,82 +128,70 @@ SDL_Color HSLtoRGB(float h, float s, float l){
         RGBret.g = (l) * 255;
         RGBret.b = (l) * 255;
     } else {
-            if (l < 50){
-                zmienna1 = l * (1.0 + s);
-            } else if (l >= 50){
-                zmienna1 = l + s - l * s;
-            }
+        if (l < 0.5){
+            zmienna1 = l * (1.0 + s);
+        } else {
+            zmienna1 = l + s - (l * s);
+        }
 
-            zmienna2 = 2 * l - zmienna1;
-            barwa = h/360;
+        zmienna2 = 2 * l - zmienna1;
+        barwa = h / 360;
 
-            zmiennaR = barwa + 0.333;
-            if (zmiennaR > 1){
-                zmiennaR -= 1;
-            } else if (zmiennaR < 0){
-                zmiennaR += 1;
-            }
+        if (zmienna1 < 0) zmienna1 += 1;
+        if (zmienna1 > 1) zmienna1 -= 1;
 
-            zmiennaG = barwa;
-            if (zmiennaG > 1){
-                zmiennaG -= 1;
-            } else if (zmiennaG < 0){
-                zmiennaG += 1;
-            }
+        if (zmienna2 < 0) zmienna2 += 1;
+        if (zmienna2 > 1) zmienna2 -= 1;
 
-            zmiennaB = barwa - 0.333;
-            if (zmiennaB > 1){
-                zmiennaB -= 1;
-            } else if (zmiennaB < 0){
-                zmiennaB += 1;
-            }
+        zmiennaR = barwa + 0.333;
+        if (zmiennaR < 0) zmiennaR += 1;
+        if (zmiennaR > 1) zmiennaR -= 1;
 
-            float czerwony;
-            if((6 * zmiennaR) < 1){
-                czerwony = zmienna2 + (zmienna1 - zmienna2) * 6 * zmiennaR;
-            } else if((2 * zmiennaR) < 1 ){
-                    czerwony = zmienna1;
-            } else if((3 * zmiennaR) < 2) {
-                    czerwony = zmienna2 + (zmienna1 - zmienna2) * (0.666 - zmiennaR) * 6;
-            } else {
-                    czerwony = zmienna2;
-            }
+        zmiennaG = barwa;
+        if (zmiennaG < 0) zmiennaG += 1;
+        if (zmiennaG > 1) zmiennaG -= 1;
 
-            float zielony;
-             if((6 * zmiennaG) < 1){
-               zielony = zmienna2 + (zmienna1 - zmienna2) * 6 * zmiennaG;
-            } else if((2 * zmiennaG) < 1 ){
-                    zielony = zmienna1;
-            } else if((3 * zmiennaG) < 2) {
-                    zielony = zmienna2 + (zmienna1 - zmienna2) * (0.666 - zmiennaG) * 6;
-            } else {
-                    zielony = zmienna2;
-            }
+        zmiennaB = barwa - 0.333;
+        if (zmiennaB < 0) zmiennaB += 1;
+        if (zmiennaB > 1) zmiennaB -= 1;
 
+        float czerwony;
+        if((6 * zmiennaR) < 1){
+            czerwony = zmienna2 + (zmienna1 - zmienna2) * 6 * zmiennaR;
+        } else if((2 * zmiennaR) < 1 ){
+            czerwony = zmienna1;
+        } else if((3 * zmiennaR) < 2) {
+            czerwony = zmienna2 + (zmienna1 - zmienna2) * (0.666 - zmiennaR) * 6;
+        } else {
+            czerwony = zmienna2;
+        }
 
-            float niebieski;
-             if((6 * zmiennaB) < 1){
-                niebieski = zmienna2 + (zmienna1 - zmienna2) * 6 * zmiennaB;
-            } else if((2 * zmiennaB) < 1 ){
-                    niebieski = zmienna1;
-            } else if((3 * zmiennaB) < 2) {
-                    niebieski = zmienna2 + (zmienna1 - zmienna2) * (0.666 - zmiennaB) * 6;
-            } else {
-                    niebieski = zmienna2;
-            }
-            //std::cout<<h<<" "<< s << " " << l<< std::endl;
+        float zielony;
+        if((6 * zmiennaG) < 1){
+            zielony = zmienna2 + (zmienna1 - zmienna2) * 6 * zmiennaG;
+        } else if((2 * zmiennaG) < 1 ){
+            zielony = zmienna1;
+        } else if((3 * zmiennaG) < 2) {
+            zielony = zmienna2 + (zmienna1 - zmienna2) * (0.666 - zmiennaG) * 6;
+        } else {
+            zielony = zmienna2;
+        }
 
-            float roundedR = (int)(czerwony * 100 + .5);
-            float roundedG = (int)(zielony * 100 + .5);
-            float roundedB = (int)(niebieski * 100 + .5);
+        float niebieski;
+        if((6 * zmiennaB) < 1){
+            niebieski = zmienna2 + (zmienna1 - zmienna2) * 6 * zmiennaB;
+        } else if((2 * zmiennaB) < 1 ){
+            niebieski = zmienna1;
+        } else if((3 * zmiennaB) < 2) {
+            niebieski = zmienna2 + (zmienna1 - zmienna2) * (0.666 - zmiennaB) * 6;
+        } else {
+            niebieski = zmienna2;
+        }
 
-            RGBret.r = std::ceil(czerwony * 255);
-            RGBret.g = std::ceil(zielony * 255);
-            RGBret.b = std::ceil(niebieski * 255);
+        RGBret.r = czerwony * 255;
+        RGBret.g = zielony * 255;
+        RGBret.b = niebieski * 255;
     }
-
-    //std::cout<<"PO " <<(int)RGBret.r << " " << (int)RGBret.g << " " << (int)RGBret.b << std::endl;
-
     return RGBret;
 }
 
@@ -217,44 +199,34 @@ HSL getHSL(int xx, int yy){
     SDL_Color colorRGB = getPixel(xx, yy);
     float r, g, b, mmin, mmax;
     HSL HSLret;
-   //std::cout<<"PRZED "<< " "<< (int)colorRGB.r << " " << (int)colorRGB.g << " " << (int)colorRGB.b << std::endl;
+
     r = colorRGB.r*1.0/255;
     g = colorRGB.g*1.0/255;
     b = colorRGB.b*1.0/255;
 
-   // std::cout << "PRZED: " << r << " " << g << " " << b << std::endl;
-
     mmin = min(r,(min(g,b)));
     mmax = max(r,(max(g,b)));
 
-   // std::cout<< mmin << " " << mmax << std::endl;
-    HSLret.L = (mmin+mmax)/2;
-  //  HSLret.L = (int) HSLret.L * 100 + .5;
+    HSLret.L = (mmin+mmax)/2.0;
 
-    if(mmin==mmax){
+    if(mmin == mmax){
         HSLret.S = 0;
     } else if(HSLret.L <= 0.5){
         HSLret.S = (mmax-mmin) / (mmax+mmin);
-    } else if (HSLret.L > 0.5){
+    } else{
         HSLret.S = (mmax-mmin) / (2.0 - mmax - mmin);
     }
 
     if(r == mmax){
         HSLret.H = (g - b) / (mmax-mmin);
-    } else if(g = mmax){
+    } else if(g == mmax){
         HSLret.H = 2.0 + (b - r) / (mmax-mmin);
     } else{
-        HSLret.H = 4.0 + (r - b) / (mmax-mmin);
+        HSLret.H = 4.0 + (r - g) / (mmax-mmin); // było r - b
     }
 
     HSLret.H *= 60;
-
-    if(HSLret.H < 0){
-        HSLret.H += 360;
-    }
-   // std::cout << "PO: " << HSLret.H << " " << HSLret.S << " " << HSLret.L << std::endl;
-
-   // std::cout<< HSLret.H << " " << HSLret.S << " " << HSLret.L << std::endl;
+    if(HSLret.H < 0) HSLret.H += 360;
 
     return HSLret;
 }
