@@ -70,9 +70,7 @@ void Funkcja3() {
     for(int x = 0; x < szerokosc/2; x++){
         for(int y = 0; y < wysokosc/2; y++){
             Uint16 color = getRGB555_(x, y);
-            setRGB555(x, y + wysokosc/2, color);    // set nie dziala         
-            //std::bitset<16> x(color);
-            //std::cout << x << std::endl;
+            setRGB555(x, y + wysokosc/2, color);      
         }
     }
 
@@ -81,15 +79,24 @@ void Funkcja3() {
 
 void Funkcja4() {
 
-    //...
+    for(int x = 0; x < szerokosc/2; x++){
+        for(int y = 0; y < wysokosc/2; y++){
+            SDL_Color color = getRGB565(x, y);
+            setRGB565(x, y + wysokosc/2, color.r, color.g, color.b);   
+        }
+    }
 
     SDL_UpdateWindowSurface(window);
 }
 
 void Funkcja5() {
 
-    //...
-
+    for(int x = 0; x < szerokosc/2; x++){
+        for(int y = 0; y < wysokosc/2; y++){
+            Uint16 color = getRGB565_(x, y);
+            setRGB565(x + szerokosc/2, y + wysokosc/2, color); 
+        }
+    }
     SDL_UpdateWindowSurface(window);
 }
 
@@ -122,13 +129,10 @@ void Funkcja9() {
 }
 
 void setRGB555(int xx, int yy, Uint8 r, Uint8 g, Uint8 b){
-    r = r >> 3;
-    g = g >> 3;
-    b = b >> 3;
-
-    r = r << 3;
-    g = g << 3;
-    b = b << 3;
+    
+    r = (r >> 3) << 3;
+    g = (g >> 3) << 3;
+    b = (b >> 3) << 3;
 
     setPixel(xx, yy, r, g, b);
 }
@@ -136,52 +140,44 @@ void setRGB555(int xx, int yy, Uint8 r, Uint8 g, Uint8 b){
 void setRGB555(int xx, int yy, Uint16 rgb555){
     Uint8 r, g, b;
 
-    std::bitset<16> x2(rgb555);
-    //std::cout<< "PRZED: " << x2 << std::endl;
-
-    r = ((((rgb555 << 1) >> 12) << 3));
-
-    g = ((((rgb555 << 5) >> 11) << 2));
-    b = ((((rgb555 << 11) >> 11) << 2));
-
-    std::bitset<8> x(r);
-   // std::cout<< "PO: " << x << std::endl;
+    r = ((((rgb555 << 1) >> 11) << 3));
+    g = ((((rgb555 << 6) >> 11) << 3));
+    b = ((((rgb555 << 11) >> 11) << 3));
 
     setPixel(xx, yy, r, g, b);
     return;
 }
 
 void setRGB565(int xx, int yy, Uint8 r, Uint8 g, Uint8 b){
-    r = r >> 3;
-    g = g >> 2;
-    b = b >> 3;
-
-    r = r << 3;
-    g = g << 2;
-    b = b << 3;
+    
+    r = (r >> 3) << 3;
+    g = (g >> 2) << 2;
+    b = (b >> 3) << 3;
 
     setPixel(xx, yy, r, g, b);
 }
 
 void setRGB565(int xx, int yy, Uint16 rgb565){
+    Uint8 r, g, b;
 
+    r = (((rgb565 >> 11) << 3));
+    g = ((((rgb565 << 5) >> 10) << 2));
+    b = ((((rgb565 << 11) >> 11) << 3));
 
+    setPixel(xx, yy, r, g, b);
     return;
 }
 
 SDL_Color getRGB555(int xx, int yy){
     SDL_Color color = getPixel(xx, yy);
     
-    color.r = color.r >> 3;
-    color.g = color.g >> 2;
-    color.b = color.b >> 3;
-
-    color.r = color.r << 3;
-    color.g = color.g << 2;
-    color.b = color.b << 3;
+    color.r = (color.r >> 3) << 3;
+    color.g = (color.g >> 3) << 3;
+    color.b = (color.b >> 3) << 3;
 
     return color;
 }
+
 
 Uint16 getRGB555_(int xx, int yy){
 
@@ -192,39 +188,37 @@ Uint16 getRGB555_(int xx, int yy){
     g = color.g;
     b = color.b;
 
-    std::bitset<16> x1(r);
-    std::bitset<16> x2(g);
-    std::bitset<16> x3(b);
-
-   // std::cout<<"PRZED: " << x1<< " " << x2 << " " << x3 << std::endl;
     r = (r >> 3) << 10;
     g = (g >> 3) << 5;
     b = (b >> 3);
-    std::bitset<16> x4(r);
-    std::bitset<16> x5(g);
-    std::bitset<16> x6(b);
 
-  //  std::cout<<"PRZED: " << x4<< " " << x5 << " " << x6 << std::endl;
-
-
-    retColor = r | g | b;
-    std::bitset<16> x(retColor);
-   // std::cout<<"PO: " << x<<std::endl;
-    return retColor;
+    return retColor = r | g | b;
 }
 
 SDL_Color getRGB565(int xx, int yy){
+    SDL_Color color = getPixel(xx, yy);
+    
+    color.r = (color.r >> 3) << 3;
+    color.g = (color.g >> 2) << 2;
+    color.b = (color.b >> 3) << 3;
 
-    SDL_Color color;
     return color;
 }
 
 Uint16 getRGB565_(int xx, int yy){
+    SDL_Color color = getPixel(xx, yy);
+    Uint16 retColor, r, g, b;
 
-    Uint16 dupa;
-    return dupa;
+    r = color.r;
+    g = color.g;
+    b = color.b;
+
+    r = (r >> 3) << 11;
+    g = (g >> 2) << 5;
+    b = (b >> 3);
+
+    return retColor = r | g | b;
 }
-
 
 void linia(int x1, int y1, int x2, int y2, Uint8 R, Uint8 G, Uint8 B) {
 
@@ -286,7 +280,6 @@ void linia(int x1, int y1, int x2, int y2, Uint8 R, Uint8 G, Uint8 B) {
 
     SDL_UpdateWindowSurface(window);
 }
-
 
 void setPixel(int x, int y, Uint8 R, Uint8 G, Uint8 B)
 {
@@ -449,7 +442,6 @@ SDL_Color getPixelSurface(int x, int y, SDL_Surface *surface) {
     return ( color ) ;
 }
 
-
 void ladujBMP(char const* nazwa, int x, int y)
 {
     SDL_Surface* bmp = SDL_LoadBMP(nazwa);
@@ -472,14 +464,11 @@ void ladujBMP(char const* nazwa, int x, int y)
 
 }
 
-
 void czyscEkran(Uint8 R, Uint8 G, Uint8 B)
 {
     SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, R, G, B));
     SDL_UpdateWindowSurface(window);
 }
-
-
 
 int main(int argc, char* argv[]) {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
