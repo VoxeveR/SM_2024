@@ -32,32 +32,196 @@ void Funkcja7();
 void Funkcja8();
 void Funkcja9();
 
+void ByteRunKompresja(int wejscie[], int dlugosc){
+    
+    int i = 0;
+
+    while (i < dlugosc){
+        if ((i < dlugosc - 1) && (wejscie[i] == wejscie[i + 1])){
+            int j = 0;
+            while((i+  j < dlugosc - 1) && (wejscie[i + j] == wejscie[i + 1 + j])
+            && (j < 127)){
+                j++;
+            }
+
+            cout<<"("<< -j << "), " << (int)wejscie[i + j] << ", ";
+            
+            i += (j+1);
+        } else {
+            int j = 0;
+            while((i + j < dlugosc - 1) && ((wejscie[i + j] != wejscie[i + j + 1])) 
+            && (j < 128)){
+                j++;
+            }
+
+            if((i+j == dlugosc - 1) && (j < 128)){
+                j++;
+            }
+
+            cout<<"("<< (j - 1) << "), ";
+            for(int k = 0; k < j; k++){
+                cout << (int)wejscie[i + k] << ", ";
+            }
+
+            i += j;
+        }
+    }
+}
+
+void ByteRunDekompresja(int wejscie[], int dlugosc){
+    int j = 0;
+    while (j < dlugosc){
+        if(wejscie[j] < 0){
+            int iters = (-1) * wejscie[j] + 1;
+            j++;
+            for(int i = 0; i < iters; i ++){
+                std::cout << wejscie[j] << ", ";
+            }
+        } else {
+            int iters = wejscie[j] + 1;
+            for(int i = 0; i < iters; i ++){
+                j++;
+                std::cout << wejscie[j] << ", ";
+            }
+        }
+        j++;
+    }
+}
+
+void RLEKompresja(int wejscie[], int dlugosc){
+    
+    int i = 0;
+
+    while (i < dlugosc) {
+
+        if ((i < dlugosc - 1) && (wejscie[i] == wejscie[i + 1])){
+            
+            int j = 0;
+            while ((i + j < dlugosc - 1) && (wejscie[i + j] == wejscie[i + j + 1]) 
+            && (j < 254)){
+                j++;
+            }
+
+            cout<<"("<<(j + 1)<<"), " << wejscie[i+j]<<", ";
+
+            i += (j+1);
+        } else {
+            
+            int j = 0;
+
+            while ((i + j < dlugosc - 1) && (wejscie[i + j] != wejscie[i + j + 1]) 
+            && (j < 254)){
+                j++;
+            }
+
+            if( (i+j == dlugosc - 1) && (j < 254)){
+                j++;
+            }
+
+            cout << (int) 0 << ", " << j << ", ";
+            
+            for(int k = 0; k < j; k++){
+                cout << wejscie[i + k] << ", ";
+            }
+
+            if (j % 2 != 0){
+                cout << (int) 0 << ", ";
+            }
+
+            i += j;
+        }
+    }
+}
+
+//int skompresowane[] = {5, 0, 0, 5, 1, 2, 3, 4, 5, 0, 3, 7, 6, 8, 2, 2, 0, 4, 1, 3, 1, 2};
+void RLEDekompresja(int wejscie[], int dlugosc){
+    int j = 0;
+    while (j < dlugosc){
+        //std::cout <<"W" << wejscie[j] << " ";
+        if(wejscie[j] > 0){
+            int iter = wejscie[j];
+           // std::cout <<"I" << iter << " ";
+            j++;
+            for(int i = 0; i < iter; i++){
+                std::cout << wejscie[j] << ", ";
+            }
+        } else if ( wejscie[j] == 0){
+            j++;
+            int iter = wejscie[j];
+            for(int i = 0; i < iter; i++){
+                j++;
+                std::cout << wejscie[j] << ", ";
+            }
+
+            if(iter % 2 != 0){
+                j++;
+            }
+        }
+        j++;
+    }
+}
 
 void Funkcja1() {
+    int nieskompresowane[] = {0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 7, 7, 8, 8, 8, 8, 8, 8, 2, 2, 1, 3};
+    int dlugosc = 24;
+    std::cout << "Wejscie" << std::endl;
+    for(int c = 0; c < dlugosc; c++){
+        std::cout << (int)nieskompresowane[c]<<", ";
+    }
+    std::cout << "\n";
 
-    //...
+    std::cout << "Skompresowane wyjscie (ByteRun)" << std::endl;
+    ByteRunKompresja(nieskompresowane, dlugosc);
+    std::cout << "\n";
 
     SDL_UpdateWindowSurface(window);
 }
 
 void Funkcja2() {
+    int nieskompresowane[] = {0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 7, 7, 7, 8, 8, 8, 8, 8, 8, 2, 2, 1, 3, 1, 2};
+    int dlugosc = 25;
+    std::cout << "Wejscie" << std::endl;
+    for(int c = 0; c < dlugosc; c++){
+        std::cout << (int)nieskompresowane[c]<<", ";
+    }
+    std::cout << "\n";
 
-    //...
+    std::cout << "Skompresowane wyjscie (RLE)" << std::endl;
+    RLEKompresja(nieskompresowane, dlugosc);
+    std::cout << "\n";
 
     SDL_UpdateWindowSurface(window);
 }
 
 void Funkcja3() {
+    int skompresowane[] = {-4, 0, 5, 1, 2, 3, 4, 5, 6, -2, 7, -5, 8, -1, 2, 0, 1};
+    int dlugosc = 17;
+    std::cout << "Skompresowane wejscie: (ByteRun)" << std::endl;
+    
+    for (int c = 0; c < dlugosc; c++){
+        std::cout << (int) skompresowane[c] << ", ";
+    }
 
-    //..
-
+    std::cout << "\n";
+    std::cout << "Wyjscie: " << std::endl;
+    ByteRunDekompresja(skompresowane, dlugosc);
+    std::cout << "\n";
     SDL_UpdateWindowSurface(window);
 }
 
 void Funkcja4() {
+    int skompresowane[] = {5, 0, 0, 5, 1, 2, 3, 4, 5, 0, 3, 7, 6, 8, 2, 2, 0, 4, 1, 3, 1, 2};
+    int dlugosc = 22;
+    std::cout << "Skompresowane wejscie: (RLE)" << std::endl;
+    
+    for (int c = 0; c < dlugosc; c++){
+        std::cout << (int) skompresowane[c] << ", ";
+    }
 
-    //...
-
+    std::cout << "\n";
+    std::cout << "Wyjscie: " << std::endl;
+    RLEDekompresja(skompresowane, dlugosc);
+    std::cout << "\n";
     SDL_UpdateWindowSurface(window);
 }
 
