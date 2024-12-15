@@ -1,0 +1,92 @@
+wejscie:
+0, 0, 0, 1, 1, 1, 1, 2, 0, 0, 3, 1, 3, 2, 2, 0, 0, 0, 3, 3, 3, 3, 1, 2, 1, 2, 3, 1, 2, 0, 0, 1, 1, 1, 3, 3,
+skompresowane wyjscie (LZ77):
+poszukujemy: 0,
+na wyjscie: (0,0,0)
+okno: 0
+poszukujemy: 0,
+ -> znalazlem 1 el.: pozycja 1
+poszukujemy: 0,0,
+na wyjscie: (1,1,0)
+okno: 0, 0, 0
+poszukujemy: 1,
+na wyjscie: (0,0,1)
+okno: 1, 0, 0, 0
+poszukujemy: 1,
+ -> znalazlem 1 el.: pozycja 1
+poszukujemy: 1,1,
+na wyjscie: (1,1,1)
+okno: 1, 1, 1, 0, 0, 0
+poszukujemy: 1,
+ -> znalazlem 1 el.: pozycja 1
+poszukujemy: 2,1,
+na wyjscie: (1,1,2)
+okno: 2, 1, 1, 1, 1, 0, 0, 0
+poszukujemy: 0,
+ -> znalazlem 1 el.: pozycja 6
+poszukujemy: 0,0,
+ -> znalazlem 2 el.: pozycja 7
+poszukujemy: 3,0,0,
+na wyjscie: (2,7,3)
+okno: 3, 0, 0, 2, 1, 1, 1, 1, 0, 0, 0
+poszukujemy: 1,
+ -> znalazlem 1 el.: pozycja 5
+poszukujemy: 3,1,
+na wyjscie: (1,5,3)
+okno: 3, 1, 3, 0, 0, 2, 1, 1, 1, 1, 0, 0, 0
+poszukujemy: 2,
+ -> znalazlem 1 el.: pozycja 6
+poszukujemy: 2,2,
+na wyjscie: (1,6,2)
+okno: 2, 2, 3, 1, 3, 0, 0, 2, 1, 1, 1, 1, 0, 0, 0
+poszukujemy: 0,
+ -> znalazlem 1 el.: pozycja 6
+poszukujemy: 0,0,
+ -> znalazlem 2 el.: pozycja 7
+poszukujemy: 0,0,0,
+ -> znalazlem 3 el.: pozycja 15
+poszukujemy: 3,0,0,0,
+na wyjscie: (3,15,3)
+okno: 3, 0, 0, 0, 2, 2, 3, 1, 3, 0, 0, 2, 1, 1, 1, 1, 0, 0, 0
+poszukujemy: 3,
+ -> znalazlem 1 el.: pozycja 1
+poszukujemy: 3,3,
+na wyjscie: (1,1,3)
+okno: 3, 3, 3, 0, 0, 0, 2, 2, 3, 1, 3, 0, 0, 2, 1, 1, 1, 1, 0, 0, 0
+poszukujemy: 3,
+ -> znalazlem 1 el.: pozycja 1
+poszukujemy: 1,3,
+ -> znalazlem 2 el.: pozycja 11
+poszukujemy: 2,1,3,
+na wyjscie: (2,11,2)
+okno: 2, 1, 3, 3, 3, 3, 0, 0, 0, 2, 2, 3, 1, 3, 0, 0, 2, 1, 1, 1, 1, 0, 0, 0
+poszukujemy: 1,
+ -> znalazlem 1 el.: pozycja 2
+poszukujemy: 2,1,
+ -> znalazlem 2 el.: pozycja 2
+poszukujemy: 3,2,1,
+na wyjscie: (2,2,3)
+okno: 3, 2, 1, 2, 1, 3, 3, 3, 3, 0, 0, 0, 2, 2, 3, 1, 3, 0, 0, 2, 1, 1, 1, 1, 0, 0, 0
+poszukujemy: 1,
+ -> znalazlem 1 el.: pozycja 3
+poszukujemy: 2,1,
+ -> znalazlem 2 el.: pozycja 3
+poszukujemy: 0,2,1,
+ -> znalazlem 3 el.: pozycja 21
+poszukujemy: 0,0,2,1,
+ -> znalazlem 4 el.: pozycja 21
+poszukujemy: 1,0,0,2,1,
+na wyjscie: (4,21,1)
+okno: 1, 0, 0, 2, 1, 3, 2, 1, 2, 1, 3, 3, 3, 3, 0, 0, 0, 2, 2, 3, 1, 3, 0, 0, 2, 1, 1, 1, 1, 0, 0, 0
+poszukujemy: 1,
+ -> znalazlem 1 el.: pozycja 1
+poszukujemy: 1,1,
+ -> znalazlem 2 el.: pozycja 27
+poszukujemy: 3,1,1,
+na wyjscie: (2,27,3)
+okno: 3, 1, 1, 1, 0, 0, 2, 1, 3, 2, 1, 2, 1, 3, 3, 3, 3, 0, 0, 0, 2, 2, 3, 1, 3, 0, 0, 2, 1, 1, 1, 1, 0, 0, 0
+ostatni
+na wyjscie: (0,0,3)
+koniec danych
+okno: 3, 3, 1, 1, 1, 0, 0, 2, 1, 3, 2, 1, 2, 1, 3, 3, 3, 3, 0, 0, 0, 2, 2, 3, 1, 3, 0, 0, 2, 1, 1, 1, 1, 0, 0, 0
+

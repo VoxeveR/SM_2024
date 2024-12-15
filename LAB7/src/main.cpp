@@ -146,6 +146,8 @@ void LZWinicjalizacja(){
         noweSlowo.kod = dodajDoSlownika(noweSlowo);
     }
 }
+
+
 void LZWKompresja(int wejscie[], int dlugosc){
     LZWinicjalizacja();
     slowo aktualneSlowo = noweSlowo();
@@ -156,7 +158,7 @@ void LZWKompresja(int wejscie[], int dlugosc){
 
     while (i < dlugosc){
         znak = wejscie[i];
-        std::cout << "Pobieramy znak" << (int)znak << " z pozycji " << i << std::endl;
+        std::cout << "Pobieramy znak " << (int)znak << " z pozycji " << i << std::endl;
         slowoZnak = polaczSlowo(aktualneSlowo, znak);
         std::cout << "Aktualne slowo: ";
         wyswietlSlowo(aktualneSlowo);
@@ -224,7 +226,10 @@ void LZWDekompresja(int wejscie[], int dlugosc) {
             wyswietlSlowo(noweSlowo);
             dodajDoSlownika(noweSlowo, true);
         }
-
+        std::cout << "poprzednieslowo: "; 
+        wyswietlSlowo(poprzednieSlowo);
+        std::cout << "aktualneSlowo: "; 
+        wyswietlSlowo(aktualneSlowo);
         poprzednieSlowo = aktualneSlowo;
 
         std::cout << std::endl;
@@ -235,11 +240,6 @@ void LZWDekompresja(int wejscie[], int dlugosc) {
     std::cout << "aktualny slownik:" << std::endl;
     wyswietlSlownik();
 }
-
-
-
-
-
 
 void Funkcja1() {
     int nieskompresowane[] = {0, 0, 0, 1, 1, 1, 1, 2, 0, 0, 3, 1, 3,

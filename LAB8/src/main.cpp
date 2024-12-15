@@ -4,8 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
-#include <vector>
 #include <string>
+#include <vector>
+#include <tuple>
+#include <utility>
 
 using namespace std;
 
@@ -42,33 +44,128 @@ struct TokenLZ77 {
     char następnyZnak;    
 };
 
-std::vector<char> RozpakujLZ77(const std::vector<TokenLZ77>& skompresowane) {
-    std::vector<char> rozpakowane;
+#include <iostream>
+#include <vector>
+#include <tuple>
+
+template <typename T>
+void wypiszWektor(const std::vector<T>& wektor) {
+    for (const T& element : wektor) {
+        std::cout << element << " ";
+    }
+    //std::cout << std::endl;
+}
+
+std::pair<int, int> longest_match(const std::vector<int>& vec1, const std::vector<int>& vec2) {
+    int m = vec1.size(), n = vec2.size();
     
-    for (const auto& token : skompresowane) {
-        if (token.przesuniecie == 0 && token.dlugość == 0) {
-            rozpakowane.push_back(token.następnyZnak);
-        }
-        else {
-            int start = rozpakowane.size() - token.przesuniecie;
-            
-            // Skopiuj podciąg
-            for (int i = 0; i < token.dlugość; ++i) {
-                if (start + i < 0) continue;  
-                rozpakowane.push_back(rozpakowane[start + i]);
+    // Create a 2D table to store the lengths of the longest common suffixes of substrings
+    std::vector<std::vector<int>> dp(m + 1, std::vector<int>(n + 1, 0));
+    
+    int longest_len = 0;
+    int end_pos = 0;  // To track the ending position of the longest match in vec1
+    int start_index = -1;  // To store the index of the first element of the longest match in vec1
+    
+    // Fill the DP table
+    for (int i = 1; i <= m; ++i) {
+        for (int j = 1; j <= n; ++j) {
+            if (vec1[i - 1] == vec2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > longest_len) {
+                    longest_len = dp[i][j];
+                    end_pos = i;
+                    start_index = i - longest_len;  // Calculate the start index of the match in vec1
+                }
+            } else {
+                dp[i][j] = 0;
             }
-            
-            rozpakowane.push_back(token.następnyZnak);
         }
     }
     
-    return rozpakowane;
+    // Check if the longest match is equal in size to vec2
+    if (longest_len == vec2.size()) {
+        // Return the length of the match and the start index of the match in vec1
+        return {longest_len, start_index + 1 };
+    } else {
+        // Return 0 if no match is equal to the size of vec2
+        return {0, 0};  // -1 indicates no match
+    }
+}
+
+void LZ77Kompresja(int data[], int dlugosc) {
+    std::vector<int> okno;
+    std::vector<int> poszukiwane;
+    int pozycja = 0;
+
+    while(pozycja < dlugosc){
+         if(pozycja == dlugosc - 1){ 
+                std::cout << "ostatni " << std::endl;
+                std::cout << "na wyjscie: (" << 0 << ", " << 0 << ", " << data[pozycja - 1] << ")" << std::endl; 
+                okno.insert(okno.begin(), data[pozycja - 1]);
+                break;
+            }
+        std::cout<<"okno: ";
+        for(int i = 0; i < okno.size(); i++){
+            std::cout << okno[i] << ", ";
+        }
+        poszukiwane.insert(poszukiwane.begin(), data[pozycja]);
+        
+        int last_match, last_index;
+        int max_dopasowanie = 0;
+        int start_index = 0;
+        int offset = -1;
+        while (true) 
+        {
+            last_match = max_dopasowanie;
+            last_index = start_index;
+            
+            std::cout << std:: endl << "poszukujemy: ";
+            wypiszWektor(poszukiwane);
+            std::cout << std::endl;
+
+            std::pair result = longest_match(okno, poszukiwane);
+            max_dopasowanie = result.first;
+            start_index = result.second;
+
+           if (max_dopasowanie == 0) {
+                pozycja++;
+
+                okno.insert(okno.begin(), poszukiwane.begin(), poszukiwane.end());
+                std::cout << "Brak dopasowania. Dodano poszukiwane do okna." << std::endl;
+                if(offset == -1) offset = 0;
+                std::cout << "na wyjscie: (" << last_match << ", " << last_index + offset << ", " << data[pozycja - 1] << ")" << std::endl; 
+                break;
+            } else {
+                std::cout << "Znaleziono dopasowanie o dlugosci " << max_dopasowanie
+                        << " na pozycji " << start_index << std::endl;
+                
+                pozycja++;
+                poszukiwane.insert(poszukiwane.begin(), data[pozycja]);
+                offset++;
+            }
+        }
+    
+        poszukiwane = {};
+
+    
+    }
+    wypiszWektor(okno);
+std::cout << "koniec danych\n";
 }
 
 
-void Funkcja1() {
 
-    //...
+
+void Funkcja1() {
+    int nieskompresowane[] = {0, 0, 0, 1, 1, 1, 1, 2, 0, 0, 3, 1, 3, 2, 2, 0, 0, 0, 3, 3, 3, 3, 1, 2, 1, 2, 3, 1, 2, 0, 0, 1, 1, 1, 3, 3};
+    int dlugosc = 36;
+    std::cout << "wejscie:" << std::endl;
+    for(int c = 0; c < dlugosc; c++){
+        std::cout << (int)nieskompresowane[c] << ", ";
+    }
+    std::cout << std::endl;
+    LZ77Kompresja(nieskompresowane, dlugosc);
+    cout << std::endl;
 
     SDL_UpdateWindowSurface(window);
 }

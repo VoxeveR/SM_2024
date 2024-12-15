@@ -6,6 +6,7 @@
 #include <SDL2/SDL.h>
 #include <vector>
 #include <string>
+#include <iomanip>
 
 using namespace std;
 
@@ -35,30 +36,262 @@ void Funkcja7();
 void Funkcja8();
 void Funkcja9();
 
+const int rozmiarBloku = 16;
+
+struct macierz {
+    float dct[rozmiarBloku][rozmiarBloku];
+    Uint8 dane[rozmiarBloku][rozmiarBloku];
+};
+
+
+void wyswietlDane(macierz blok)
+{
+    cout << "Dane pikselowe w macierzy:"<<endl;
+    for(int i = 0; i < rozmiarBloku; i++)
+    {
+        for(int j = 0; j < rozmiarBloku; j++)
+        {
+            cout << setw(4) << (int)blok.dane[j][i]<<" ";
+        }
+        cout << endl;
+    }
+}
+
+
+void wyswietlDCT(macierz blok)
+{
+    cout << "Wspolczynniki transformaty w macierzy:" << endl;
+    for(int i = 0; i < rozmiarBloku; i++)
+    {
+        for(int j = 0; j < rozmiarBloku; j++)
+        {
+            cout << fixed << setw(6) << setprecision(2) << blok.dct[j][i]<<" ";
+        }
+        cout << endl;
+    }
+}
+
+macierz dct(Uint8 wartosci[rozmiarBloku][rozmiarBloku])
+{
+    float wynik[rozmiarBloku][rozmiarBloku];
+
+    for(int v = 0; v < rozmiarBloku; ++v)
+    {
+        for(int u = 0; u < rozmiarBloku; ++u)
+        {
+            const double cu = (u == 0) ? 1.0 / sqrt(2) : 1.0;
+            const double cv = (v == 0) ? 1.0 / sqrt(2) : 1.0;
+            double wspolczynnikDCT = 0;
+
+            for(int y = 0; y < rozmiarBloku; ++y)
+            {
+                for(int x = 0; x < rozmiarBloku; ++x)
+                {
+                    double uCosFactor = cos( (double)(2*x+1)*M_PI*(double)u / (2*(double)rozmiarBloku) );
+                    double vCosFactor = cos( (double)(2*y+1)*M_PI*(double)v / (2*(double)rozmiarBloku) );
+                    double pixel = (double)wartosci[x][y];
+                    wspolczynnikDCT += pixel*uCosFactor*vCosFactor;
+                }
+
+            }
+            wspolczynnikDCT *= ( 2.0 / (double)rozmiarBloku ) * cu* cv;
+            wynik[u][v] = wspolczynnikDCT;
+        }
+    }
+    macierz rezultat;
+    for( int j = 0; j < rozmiarBloku; j++)
+    {
+        for(int i = 0; i < rozmiarBloku; i++)
+        {
+            rezultat.dct[i][j] = wynik[i][j];
+            rezultat.dane[i][j] = wartosci[i][j];
+        }
+    }
+    return rezultat;
+}
+
+macierz idct(float DCT[rozmiarBloku][rozmiarBloku])
+{
+    int wynik[rozmiarBloku][rozmiarBloku];
+
+    for(int x = 0; x < rozmiarBloku; ++x)
+    {
+        for(int y = 0; y < rozmiarBloku; ++y)
+        {
+            double pixel = 0;
+            for(int u = 0; u < rozmiarBloku; ++u)
+            {
+                for(int v = 0; v < rozmiarBloku; ++v)
+                {
+                    const double cu = (u == 0) ? 1.0 / sqrt(2) : 1.0;
+                    const double cv = (v == 0) ? 1.0 / sqrt(2) : 1.0;
+                    double uCosFactor = cos( (double)(2*x+1)*M_PI*(double)u / (2*(double)rozmiarBloku) );
+                    double vCosFactor = cos( (double)(2*y+1)*M_PI*(double)v / (2*(double)rozmiarBloku) );
+                    double wspolczynnikDCT = DCT[u][v];
+                    pixel += wspolczynnikDCT * uCosFactor * vCosFactor *cu * cv;
+                }
+            }
+            pixel*= (2.0/(double)rozmiarBloku);
+            wynik[x][y] = round(pixel);
+        }
+    }
+
+
+    macierz rezultat;
+    for(int j = 0; j < rozmiarBloku; j++)
+    {
+        for(int i = 0; i < rozmiarBloku; i++)
+        {
+            if(wynik[i][j] > 255) wynik[i][j] = 255;
+            else if(wynik[i][j] < 0) wynik[i][j] = 0;
+
+            rezultat.dane[i][j] = wynik[i][j];
+            rezultat.dct[i][j] = DCT[i][j];
+        }
+    }
+    return rezultat;
+}
+
 void Funkcja1() {
 
-    //...
+    float kolor = 0;
+    for(int y = 0; y < rozmiarBloku; y++)
+    {
+        for(int x = 0; x < rozmiarBloku; x++)
+        {
+            setPixel(x+rozmiarBloku, y+rozmiarBloku, kolor, kolor, kolor);
+            kolor += 256.0/(rozmiarBloku*rozmiarBloku);
+        }
+    }
+
+    for(int y = 1; y < rozmiarBloku; y+=2)
+    {
+        for(int x = 1; x < rozmiarBloku; x+=2)
+        {
+            setPixel(x+3*rozmiarBloku, y+rozmiarBloku, 255, 255, 255);
+            setPixel(x+3*rozmiarBloku-1, y+rozmiarBloku-1, 128, 128, 128);
+            setPixel(x+3*rozmiarBloku, y+rozmiarBloku-1, 0,0,0);
+            setPixel(x+3*rozmiarBloku-1, y+rozmiarBloku, 0, 0, 0);
+        }
+    }
 
     SDL_UpdateWindowSurface(window);
 }
 
 void Funkcja2() {
-    
-    //...
+
+    macierz blokDCT;
+    macierz blokDane;
+    macierz noweDane;
+
+    for(int y = 0; y < rozmiarBloku; y++)
+    {
+        for(int x = 0; x < rozmiarBloku; x++)
+        {
+            blokDane.dane[x][y] = getPixel(x+rozmiarBloku, y+rozmiarBloku).r;
+            blokDane.dct[x][y] = 0;
+        }
+    }
+    wyswietlDane(blokDane);
+    cout << endl;
+    blokDCT = dct(blokDane.dane);
+    wyswietlDCT(blokDCT);
+    cout << endl;
+    noweDane = idct(blokDCT.dct);
+    wyswietlDane(noweDane);
+    cout << endl;
+    for(int y = 0; y < rozmiarBloku; y++)
+    {
+        for(int x = 0; x < rozmiarBloku; x++)
+        {
+            setPixel(x + rozmiarBloku, y + 3*rozmiarBloku, noweDane.dane[x][y], noweDane.dane[x][y], noweDane.dane[x][y]);
+        }
+    }
+
+    cout << "Drugi blok" << endl;
+    for(int y = 0; y < rozmiarBloku; y++)
+    {
+        for(int x = 0; x < rozmiarBloku; x++)
+        {
+            blokDane.dane[x][y] = getPixel(x+3*rozmiarBloku, y+rozmiarBloku).r;
+            blokDane.dct[x][y] = 0;
+        }
+    }
+    wyswietlDane(blokDane);
+    cout << endl;
+    blokDCT = dct(blokDane.dane);
+    wyswietlDCT(blokDCT);
+    cout << endl;
+    noweDane = idct(blokDCT.dct);
+    wyswietlDane(noweDane);
+    cout << endl;
+    for(int y = 0; y < rozmiarBloku; y++)
+    {
+        for(int x = 0; x < rozmiarBloku; x++)
+        {
+            setPixel(x + 3*rozmiarBloku, y + 3*rozmiarBloku, noweDane.dane[x][y], noweDane.dane[x][y], noweDane.dane[x][y]);
+        }
+    }
 
     SDL_UpdateWindowSurface(window);
 }
 
 void Funkcja3() {
-   
-    //...
+
+    SDL_Color kolor;
+    uint8_t szary;
+    for(int y = 0; y < wysokosc; y++)
+    {
+        for(int x = 0; x < szerokosc; x++)
+        {
+            kolor = getPixel(x,y);
+            szary = 0.299 * kolor.r + 0.587 * kolor.g + 0.114 * kolor.b;
+            setPixel(x, y, szary, szary, szary);
+
+        }
+    }
 
     SDL_UpdateWindowSurface(window);
 }
 
 void Funkcja4() {
-    
-    //...
+
+    for(int y = 0; y < wysokosc/2; y+=rozmiarBloku)
+    {
+        for(int x = 0; x < szerokosc/2; x+=rozmiarBloku)
+        {
+            macierz blokDCT;
+            macierz blokDane;
+            macierz noweDane;
+
+            for(int i = 0; i < rozmiarBloku; i++)
+            {
+                for(int j = 0; j < rozmiarBloku; j++)
+                {
+                    blokDane.dane[j][i] = getPixel(x+j, y+i).r;
+                    blokDane.dct[j][i] = 0;
+                }
+            }
+            blokDCT = dct(blokDane.dane);
+            for(int i = 0; i < rozmiarBloku; i++)
+            {
+                for(int j = 0; j < rozmiarBloku; j++)
+                {
+                    if(i > rozmiarBloku*0.75 && j > rozmiarBloku*0.75) blokDCT.dct[j][i] = 0;
+                    else if(blokDCT.dct[j][i] != 0) blokDCT.dct[j][i] = round(blokDCT.dct[j][i]);
+
+                }
+            }
+            noweDane = idct(blokDCT.dct);
+            for(int i = 0; i < rozmiarBloku; i++)
+            {
+                for(int j = 0; j < rozmiarBloku; j++)
+                {
+                    setPixel(x + j + szerokosc/2, y + i, noweDane.dane[j][i], noweDane.dane[j][i], noweDane.dane[j][i]);
+                }
+            }
+        }
+    }
 
     SDL_UpdateWindowSurface(window);
 }

@@ -32,6 +32,7 @@ void Funkcja7();
 void Funkcja8();
 void Funkcja9();
 
+//int nieskompresowane[] = {0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 7, 7, 8, 8, 8, 8, 8, 8, 2, 2, 1, 3};
 void ByteRunKompresja(int wejscie[], int dlugosc){
     
     int i = 0;
@@ -88,6 +89,7 @@ void ByteRunDekompresja(int wejscie[], int dlugosc){
     }
 }
 
+//int nieskompresowane[] = {0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 7, 7, 7, 8, 8, 8, 8, 8, 8, 2, 2, 1, 3, 1, 2};
 void RLEKompresja(int wejscie[], int dlugosc){
     
     int i = 0;
